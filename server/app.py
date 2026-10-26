@@ -1,8 +1,8 @@
 from flask import Flask, make_response
 from flask_migrate import Migrate
-from server.config import db
 
-from models import *
+
+from models import db, Exercise, Workout, WorkoutExercise
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
