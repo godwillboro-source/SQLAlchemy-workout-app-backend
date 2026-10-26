@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
+from marshmallow import Schema, fields, validate, validates
 db = SQLAlchemy()
 
 # Define Models here
@@ -29,6 +30,14 @@ class Exercise(db.Model):
         if category not in valid_categories:
             raise ValueError(f"Category must be one of {valid_categories}.")
         return category
+    
+class ExerciseSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    name = fields.String(required=True, validate=validate.Range(min=1, error="Exercise name cannot be empty."))
+    category = fields.String(required=True, validate=validate.OneOf(['Cardio', 'Strength', 'Flexibility', 'HIIT'], error="Category must be one of 'Cardio', 'Strength', 'Flexibility', 'HIIT'."))
+    equipment_needed = fields.Boolean(default=False)
+
+    workout_exercises = fields.List(fields.Nested('WorkoutExerciseSchema', exclude=('exercise',)))
 
 class Workout(db.Model):
     __tablename__ = 'workouts'
@@ -53,7 +62,16 @@ class Workout(db.Model):
         if not date:
             raise ValueError("Workout date cannot be empty.")
         return date
-    
+
+class WorkoutSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    date = fields.Date(required=True, error_messages={"required": "Workout date cannot be empty."})
+    duration_minutes = fields.Integer(required=True, validate=validate.Length(min=1, error="Workout duration must be greater than 0."))
+    notes = fields.String(validate=validate.Length(max=255))
+
+    workout_exercises = fields.List(fields.Nested('WorkoutExerciseSchema', exclude=('workout',)))
+
+
 class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
     id = db.Column(db.Integer, primary_key=True)
@@ -82,3 +100,14 @@ class WorkoutExercise(db.Model):
         if reps <= 0:
             raise ValueError("Reps must be greater than 0.")
         return reps
+
+class WorkoutExerciseSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    workout_id = fields.Integer(required=True)
+    exercise_id = fields.Integer(required=True)
+    sets = fields.Integer(required=True, validate=validate.Range(min=1, error="Sets must be greater than 0."))
+    reps = fields.Integer(required=True, validate=validate.Range(min=1, error="Reps must be greater than 0."))
+    duration_seconds = fields.Integer(validate=validate.Range(min=1, error="Duration seconds must be greater than 0."))
+
+    workout = fields.Nested(lambda: WorkoutSchema, exclude=('workout_exercises',))
+    exercise = fields.Nested(lambda: ExerciseSchema, exclude=('workout_exercises',))
