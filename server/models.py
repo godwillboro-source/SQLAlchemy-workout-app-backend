@@ -8,7 +8,6 @@ db = SQLAlchemy()
 """Our models and schemas will be defined in this file, each model with its corressponding schema. Models represent the table structures while schemas 
 handle the serialization and deserialization of data.
 """
-# Define Models here
 class Exercise(db.Model):
     __tablename__ = 'exercises'
     __table_args__ = (

@@ -230,23 +230,41 @@ def get_workout_exercise(id):
     else:
         return make_response({"error": "WorkoutExercise not found"}, 404)
 
-@app.route("/workout_exercises", methods=["POST"])
-def create_workout_exercise():
-    data = request.get_json()
-    if not data:
-        return make_response({"error": "No input data provided"}, 400)
+from sqlalchemy.exc import IntegrityError
+
+@app.route(
+    "/workouts/<int:workout_id>/exercises/<int:exercise_id>/workout_exercises",
+    methods=["POST"],
+)
+def add_exercise_to_workout(workout_id, exercise_id):
+    workout = db.session.get(Workout, workout_id)
+    if not workout:
+        return make_response({"error": "Workout not found"}, 404)
+
+    exercise = db.session.get(Exercise, exercise_id)
+    if not exercise:
+        return make_response({"error": "Exercise not found"}, 404)
+
+    data = request.get_json() or {}
+    # IDs come from the URL, so they override anything in the body
+    data["workout_id"] = workout_id
+    data["exercise_id"] = exercise_id
+
     try:
-        workout_exercise_data = workout_exercise_schema.load(data)
-        errors = validate_workout_exercise_data(workout_exercise_data)
+        we_data = workout_exercise_schema.load(data)
+        errors = validate_workout_exercise_data(we_data)
         if errors:
             return make_response({"errors": errors}, 400)
 
-        new_workout_exercise = WorkoutExercise(**workout_exercise_data)
-        db.session.add(new_workout_exercise)
+        new_we = WorkoutExercise(**we_data)
+        db.session.add(new_we)
         db.session.commit()
-        return make_response(workout_exercise_schema.dump(new_workout_exercise), 201)
+        return make_response(workout_exercise_schema.dump(new_we), 201)
     except ValidationError as err:
         return make_response({"errors": err.messages}, 400)
+    except IntegrityError:
+        db.session.rollback()
+        return make_response({"error": "Could not create workout exercise"}, 400)
 
 @app.route("/workout_exercises/<int:id>", methods=["PATCH"])
 def update_workout_exercise(id):
