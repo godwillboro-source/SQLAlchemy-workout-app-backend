@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields
+from sqlalchemy import CheckConstraint
 db = SQLAlchemy()
 
 
@@ -10,6 +11,13 @@ handle the serialization and deserialization of data.
 # Define Models here
 class Exercise(db.Model):
     __tablename__ = 'exercises'
+    __table_args__ = (
+        CheckConstraint(
+            "category IN ('Cardio', 'Strength', 'Flexibility', 'HIIT')",
+            name='ck_exercises_valid_category',
+        ),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
 
     #Exercise name should be unique and not null
@@ -31,6 +39,13 @@ class ExerciseSchema(Schema):
 
 class Workout(db.Model):
     __tablename__ = 'workouts'
+    __table_args__ = (
+        CheckConstraint(
+            'duration_minutes > 0',
+            name='ck_workouts_positive_duration',
+        ),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
 
@@ -50,6 +65,14 @@ class WorkoutSchema(Schema):
 
 class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
+    __table_args__ = (
+        CheckConstraint('sets > 0', name='ck_workout_exercises_positive_sets'),
+        CheckConstraint(
+            'reps IS NULL OR reps > 0',
+            name='ck_workout_exercises_positive_reps',
+        ),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
 
     workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'), nullable=False)
