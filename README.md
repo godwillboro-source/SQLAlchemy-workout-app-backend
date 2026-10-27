@@ -55,28 +55,28 @@ The API will be available at http://localhost:5555.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | '/exercises' | List all exercises |
-| GET | '/exercises/<id>' | Get a single exercise with its associated workouts |
-| POST | '/exercises' | Create a new exercise |
-| DELETE | '/exercises/<id>' | Delete an exercise |
-| PATCH | '/exercises/<id>' | Update an existing workout |
+| GET | /exercises | List all exercises |
+| GET | /exercises/\<id> | Get a single exercise with its associated workouts |
+| POST | /exercises | Create a new exercise |
+| DELETE | /exercises/\<id> | Delete an exercise |
+| PATCH | /exercises/\<id> | Update an existing workout |
 
 ### Workout Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | '/workouts' | List all workouts |
-| GET | '/workouts/<id>' | Get a single workout with its exercises and sets, reps/duration |
-| POST | '/workouts' | Create a new workout |
-| DELETE | '/workouts/<id>' | Delete a workout |
-| PATCH | '/workouts/<id>' | Update an existing workout |
+| GET | /workouts | List all workouts |
+| GET | /workouts/\<id> | Get a single workout with its exercises and sets, reps/duration |
+| POST | /workouts | Create a new workout |
+| DELETE | /workouts/\<id> | Delete a workout |
+| PATCH | /workouts/\<id> | Update an existing workout |
 
 ### Workout_Exercises Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | '/workout_exercises' | List all exercises recorded across workouts |
-| GET | '/workout_exercises/<id>' | retrieves one exercise entry from a workout using its ID |
-| POST | '/workout_exercises' | creates a workout-exercise entry, linking an exercise to a workout |
-| DELETE | '/workout_exercises/<id>' | Delete a workout-exercise entry |
-| PATCH | '/workout_exercises/<id>' | Update an existing workout-exercise entry |
+| GET | /workout_exercises | List all exercises recorded across workouts |
+| GET | /workout_exercises/\<id> | retrieves one exercise entry from a workout using its ID |
+| POST | /workout_exercises | creates a workout-exercise entry, linking an exercise to a workout |
+| DELETE | /workout_exercises/\<id> | Delete a workout-exercise entry |
+| PATCH | /workout_exercises/\<id> | Update an existing workout-exercise entry |
