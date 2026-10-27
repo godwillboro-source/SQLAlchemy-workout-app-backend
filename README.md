@@ -77,6 +77,6 @@ The API will be available at http://localhost:5555.
 |--------|----------|-------------|
 | GET | /workout_exercises | List all exercises recorded across workouts |
 | GET | /workout_exercises/\<id> | retrieves one exercise entry from a workout using its ID |
-| POST | /workout_exercises | creates a workout-exercise entry, linking an exercise to a workout |
+| POST | /workouts/\<id>/exercises/\<id>/workout_exercises | creates a workout-exercise entry, linking an exercise to a workout |
 | DELETE | /workout_exercises/\<id> | Delete a workout-exercise entry |
 | PATCH | /workout_exercises/\<id> | Update an existing workout-exercise entry |
