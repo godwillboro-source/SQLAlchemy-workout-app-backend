@@ -6,10 +6,15 @@ __pycache__/
 # Virtual environment
 .venv/
 venv/
-
-# SQLite database files
+# SQLite database & backup files
 *.db
-server/instance/
+*.db-*
+*.bak
+*.backup
+instance/*.bak
+instance/*.backup
+server/instance/*.bak
+server/instance/*.backup
 
 # PyCharm
 .idea/
